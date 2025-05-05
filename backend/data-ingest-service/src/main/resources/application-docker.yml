@@ -1,0 +1,21 @@
+server:
+  port: 8082
+
+spring:
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: user
+    password: pass
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000
+          multiplier: 2.0
+          max-interval: 10000
+          max-attempts: 10
+
+app:
+  queue:
+    name: air-quality
