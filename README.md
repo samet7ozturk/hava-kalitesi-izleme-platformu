@@ -42,92 +42,74 @@ cd proje-adi
 docker-compose up --build
 ```
 
-Frontend http://localhost:3000, API http://localhost:8080 adreslerinde çalışacaktır.
+Frontend arayüzü: http://localhost:3000
 
-Kullanım
+Backend API: http://localhost:8080/api
 
-Backend
+---
 
-Veri Besleme (Manual):
+## 🧪 Kullanım
 
-./manual-input.sh <latitude> <longitude> <parameter> <value>
+Uygulama çalıştıktan sonra:
 
-Otomatik Test:
+- Harita ve grafik arayüzü üzerinden verileri görebilirsiniz.
+- Test amaçlı örnek veri göndermek için aşağıdaki scriptleri kullanabilirsiniz:
 
-./auto-test.sh --duration=60 --rate=5 --anomaly-chance=10
+```bash
+bash scripts/manual-input.sh
+bash scripts/auto-test.sh
+```
 
-Frontend
+---
 
-Tarayıcıda http://localhost:3000 adresini açın.
+## 📡 API Dökümantasyonu
 
-Menüden Anomaliler, Harita ve Grafik sayfalarına erişin.
+GET /api/air-quality
+Açıklama: Belirli konumda güncel hava kalitesini döner.
 
-Scriptler
+Parametre    Tip    Açıklama
+lat	         Float	Enlem
+lng	         Float	Boylam
 
-manual-input.sh: Elle veri gönderme
+GET /api/heatmap
+Açıklama: Verilen konum ve yarıçapta ölçüm verilerini döner.
 
-auto-test.sh: Rastgele veri ve anomali simülasyonu
+Parametre    Tip    Açıklama
+lat	         Float	Merkez enlem
+lng	         Float	Merkez boylam
+radius	     Number	(opsiyonel) metre
 
-API Dokümantasyonu
+GET /api/anomalies
+Açıklama: Zaman aralığına göre anomali verilerini döner.
 
-Endpoint
+Parametre    Tip    Açıklama
+from         Unix   Başlangıç zaman damgası
+to           Unix   Bitiş zaman damgası
 
-Metod
+---
 
-Açıklama
+## 🛠️ Test ve Scriptler
 
-Örnek URL
+- scripts/manual-input.sh: Elle test verisi gönderimi
+- scripts/auto-test.sh: Otomatik, rastgele verili test senaryosu
+- ChartPage: PM2.5, PM10, CO2 için dropdown seçimli zaman serisi grafiği
 
-/api/readings
+---
 
-GET
+## 🗃️ Veri Yönetimi
 
-Tüm okumaları getirir
+- TimescaleDB Hypertable: Performanslı zaman serisi verisi saklama
+- Retention Policy: Eski verilerin otomatik olarak silinmesi (örneğin 30 gün)
+- Spring Boot Actuator: Uygulama sağlık ve metrik izleme endpoint'leri
+- SLF4J + Logback: Gelişmiş loglama altyapısı
 
-/api/readings
+---
 
-/api/readings/{id}
+## 🧑‍💻 Geliştirici Notları
 
-GET
-
-Belirli ID ile okuma
-
-/api/readings/123
-
-/api/anomalies
-
-GET
-
-Zaman aralığındaki anomalileri listeler
-
-/api/anomalies?from=TS&to=TS
-
-/api/heatmap
-
-GET
-
-Koordinat ve yarıçapa göre ısı haritası verisi
-
-/api/heatmap?lat=..&lng=..&radius=..
-
-/api/air-quality
-
-GET
-
-Belirli konumun en son değerini getirir
-
-/api/air-quality?lat=..&lng=..
-
-Diagramlar
-
-
-
-Troubleshooting
-
-Bağlantı Hataları: Servislerin port ve CORS ayarlarını kontrol edin.
-
-Veri Gelmeme: RabbitMQ ve TimescaleDB log’larını inceleyin.
-
-İletişim
-
-Sorumlu: Samet Emre
+- Backend: Java + Spring Boota
+- Frontend: React + TypeScript
+- Veritabanı: PostgreSQL + TimescaleDB eklentisi
+- CI/CD Önerisi: GitHub Actions (build, test ve deploy)
+- Test: JUnit, Mockito, Testcontainers ile birim ve entegrasyon testleri
+- Docker Healthcheck: Servis sağlığı için healthcheck tanımları
