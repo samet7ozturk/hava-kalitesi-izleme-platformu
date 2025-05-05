@@ -40,6 +40,7 @@ Gerçek zamanlı hava kalitesi verilerini izlemek, görselleştirmek ve anormall
 git clone https://github.com/kullaniciadi/proje-adi.git
 cd proje-adi
 docker-compose up --build
+```
 
 Frontend http://localhost:3000, API http://localhost:8080 adreslerinde çalışacaktır.
 
