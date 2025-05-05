@@ -1,68 +1,44 @@
-Hava Kalitesi İzleme Platformu
+# 🌍 Hava Kalitesi İzleme Platformu
 
-İçindekiler
+Gerçek zamanlı hava kalitesi verilerini izlemek, görselleştirmek ve anormallikleri tespit etmek için geliştirilmiş tam yığın (full-stack) bir web platformudur. Proje; sensör verilerini işler, harita üzerinde gösterir ve belirli eşiklere göre anomalileri tespit eder.
 
-Projenin Amacı
+## 📑 İçindekiler
 
-Mimari
+- [Özellikler](#özellikler)
+- [Kurulum](#kurulum)
+- [Kullanım](#kullanım)
+- [API Dökümantasyonu](#api-dökümantasyonu)
+- [Test ve Scriptler](#test-ve-scriptler)
+- [Veri Yönetimi](#veri-yönetimi)
+- [Geliştirici Notları](#geliştirici-notları)
+- [Lisans](#lisans)
 
-Teknolojiler
+---
 
-Kurulum
+## 🚀 Özellikler
 
-Kullanım
+- Gerçek zamanlı hava kalitesi izleme (PM2.5, PM10, CO2)
+- Anomali tespiti (eşik bazlı)
+- Harita üzerinde ısı haritası gösterimi
+- Sensör bazlı zaman serisi grafikleri
+- Docker ile tam yığın yapılandırma
+- TimescaleDB ile zaman serisi veri yönetimi
 
-Backend
+---
 
-Frontend
+## ⚙️ Kurulum
 
-Scriptler
+### 1. Gereksinimler
 
-API Dokümantasyonu
+- Docker & Docker Compose
+- Node.js (geliştirme için)
+- Java 17+ (backend geliştirme için)
 
-Diagramlar
+### 2. Başlatma
 
-Troubleshooting
-
-İletişim
-
-Projenin Amacı
-
-Bu proje, dünya genelindeki hava kirlilik verilerini toplayan, analiz eden ve görselleştiren web tabanlı bir platform geliştirmeyi amaçlamaktadır. Anomali tespiti ile kullanıcılar, kritik kirlilik seviyelerinden anında haberdar olur.
-
-Mimari
-
-Data Ingest Service: Hava kalitesi verilerini REST API aracılığıyla alır ve RabbitMQ kuyruğuna gönderir.
-
-Anomaly Detector Service: Mesaj kuyruklarından beslenerek veri işleme ve anomali tespiti gerçekleştirir. Sonuçları TimescaleDB'ye kaydeder ve WebSocket üzerinden abonelere iletir.
-
-API Gateway: Tüm servisleri tek çatı altında sunar, veritabanına erişim sağlar ve REST/WebSocket endpoint’lerini yönetir.
-
-Frontend: React + Leaflet/Chart.js tabanlı kullanıcı arayüzü.
-
-Teknolojiler
-
-Backend: Spring Boot (Java 17), RabbitMQ, TimescaleDB
-
-Frontend: React, Leaflet, Chart.js, STOMP/SockJS
-
-Containerization: Docker, docker-compose
-
-Diğer: GitHub Actions (CI), JUnit/Mockito (Test)
-
-Kurulum
-
-Depoyu klonlayın:
-
-git clone <repo_url>
-cd air-quality-monitoring
-
-Ortam değişkenlerini ayarlayın:
-
-.env dosyasına API URL ve diğer ayarları ekleyin.
-
-Tüm servisi ayağa kaldırın:
-
+```bash
+git clone https://github.com/kullaniciadi/proje-adi.git
+cd proje-adi
 docker-compose up --build
 
 Frontend http://localhost:3000, API http://localhost:8080 adreslerinde çalışacaktır.
