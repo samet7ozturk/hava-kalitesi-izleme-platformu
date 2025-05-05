@@ -1,156 +1,115 @@
-Hava Kalitesi İzleme Platformu
+# 🌍 Hava Kalitesi İzleme Platformu
 
-İçindekiler
+Gerçek zamanlı hava kalitesi verilerini izlemek, görselleştirmek ve anormallikleri tespit etmek için geliştirilmiş tam yığın (full-stack) bir web platformudur. Proje; sensör verilerini işler, harita üzerinde gösterir ve belirli eşiklere göre anomalileri tespit eder.
 
-Projenin Amacı
+## 📑 İçindekiler
 
-Mimari
+- [Özellikler](#özellikler)
+- [Kurulum](#kurulum)
+- [Kullanım](#kullanım)
+- [API Dökümantasyonu](#api-dökümantasyonu)
+- [Test ve Scriptler](#test-ve-scriptler)
+- [Veri Yönetimi](#veri-yönetimi)
+- [Geliştirici Notları](#geliştirici-notları)
+- [Lisans](#lisans)
 
-Teknolojiler
+---
 
-Kurulum
+## 🚀 Özellikler
 
-Kullanım
+- Gerçek zamanlı hava kalitesi izleme (PM2.5, PM10, CO2)
+- Anomali tespiti (eşik bazlı)
+- Harita üzerinde ısı haritası gösterimi
+- Sensör bazlı zaman serisi grafikleri
+- Docker ile tam yığın yapılandırma
+- TimescaleDB ile zaman serisi veri yönetimi
 
-Backend
+---
 
-Frontend
+## ⚙️ Kurulum
 
-Scriptler
+### 1. Gereksinimler
 
-API Dokümantasyonu
+- Docker & Docker Compose
+- Node.js (geliştirme için)
+- Java 17+ (backend geliştirme için)
 
-Diagramlar
+### 2. Başlatma
 
-Troubleshooting
-
-İletişim
-
-Projenin Amacı
-
-Bu proje, dünya genelindeki hava kirlilik verilerini toplayan, analiz eden ve görselleştiren web tabanlı bir platform geliştirmeyi amaçlamaktadır. Anomali tespiti ile kullanıcılar, kritik kirlilik seviyelerinden anında haberdar olur.
-
-Mimari
-
-Data Ingest Service: Hava kalitesi verilerini REST API aracılığıyla alır ve RabbitMQ kuyruğuna gönderir.
-
-Anomaly Detector Service: Mesaj kuyruklarından beslenerek veri işleme ve anomali tespiti gerçekleştirir. Sonuçları TimescaleDB'ye kaydeder ve WebSocket üzerinden abonelere iletir.
-
-API Gateway: Tüm servisleri tek çatı altında sunar, veritabanına erişim sağlar ve REST/WebSocket endpoint’lerini yönetir.
-
-Frontend: React + Leaflet/Chart.js tabanlı kullanıcı arayüzü.
-
-Teknolojiler
-
-Backend: Spring Boot (Java 17), RabbitMQ, TimescaleDB
-
-Frontend: React, Leaflet, Chart.js, STOMP/SockJS
-
-Containerization: Docker, docker-compose
-
-Diğer: GitHub Actions (CI), JUnit/Mockito (Test)
-
-Kurulum
-
-Depoyu klonlayın:
-
-git clone <repo_url>
-cd air-quality-monitoring
-
-Ortam değişkenlerini ayarlayın:
-
-.env dosyasına API URL ve diğer ayarları ekleyin.
-
-Tüm servisi ayağa kaldırın:
-
+```bash
+git clone https://github.com/kullaniciadi/proje-adi.git
+cd proje-adi
 docker-compose up --build
+```
 
-Frontend http://localhost:3000, API http://localhost:8080 adreslerinde çalışacaktır.
+Frontend arayüzü: http://localhost:3000
 
-Kullanım
+Backend API: http://localhost:8080/api
 
-Backend
+---
 
-Veri Besleme (Manual):
+## 🧪 Kullanım
 
-./manual-input.sh <latitude> <longitude> <parameter> <value>
+Uygulama çalıştıktan sonra:
 
-Otomatik Test:
+- Harita ve grafik arayüzü üzerinden verileri görebilirsiniz.
+- Test amaçlı örnek veri göndermek için aşağıdaki scriptleri kullanabilirsiniz:
 
-./auto-test.sh --duration=60 --rate=5 --anomaly-chance=10
+```bash
+bash scripts/manual-input.sh
+bash scripts/auto-test.sh
+```
 
-Frontend
+---
 
-Tarayıcıda http://localhost:3000 adresini açın.
+## 📡 API Dökümantasyonu
 
-Menüden Anomaliler, Harita ve Grafik sayfalarına erişin.
+GET /api/air-quality
+Açıklama: Belirli konumda güncel hava kalitesini döner.
 
-Scriptler
+Parametre    Tip    Açıklama
+lat	         Float	Enlem
+lng	         Float	Boylam
 
-manual-input.sh: Elle veri gönderme
+GET /api/heatmap
+Açıklama: Verilen konum ve yarıçapta ölçüm verilerini döner.
 
-auto-test.sh: Rastgele veri ve anomali simülasyonu
+Parametre    Tip    Açıklama
+lat	         Float	Merkez enlem
+lng	         Float	Merkez boylam
+radius	     Number	(opsiyonel) metre
 
-API Dokümantasyonu
+GET /api/anomalies
+Açıklama: Zaman aralığına göre anomali verilerini döner.
 
-Endpoint
+Parametre    Tip    Açıklama
+from         Unix   Başlangıç zaman damgası
+to           Unix   Bitiş zaman damgası
 
-Metod
+---
 
-Açıklama
+## 🛠️ Test ve Scriptler
 
-Örnek URL
+- scripts/manual-input.sh: Elle test verisi gönderimi
+- scripts/auto-test.sh: Otomatik, rastgele verili test senaryosu
+- ChartPage: PM2.5, PM10, CO2 için dropdown seçimli zaman serisi grafiği
 
-/api/readings
+---
 
-GET
+## 🗃️ Veri Yönetimi
 
-Tüm okumaları getirir
+- TimescaleDB Hypertable: Performanslı zaman serisi verisi saklama
+- Retention Policy: Eski verilerin otomatik olarak silinmesi (örneğin 30 gün)
+- Spring Boot Actuator: Uygulama sağlık ve metrik izleme endpoint'leri
+- SLF4J + Logback: Gelişmiş loglama altyapısı
 
-/api/readings
+---
 
-/api/readings/{id}
+## 🧑‍💻 Geliştirici Notları
 
-GET
-
-Belirli ID ile okuma
-
-/api/readings/123
-
-/api/anomalies
-
-GET
-
-Zaman aralığındaki anomalileri listeler
-
-/api/anomalies?from=TS&to=TS
-
-/api/heatmap
-
-GET
-
-Koordinat ve yarıçapa göre ısı haritası verisi
-
-/api/heatmap?lat=..&lng=..&radius=..
-
-/api/air-quality
-
-GET
-
-Belirli konumun en son değerini getirir
-
-/api/air-quality?lat=..&lng=..
-
-Diagramlar
-
-
-
-Troubleshooting
-
-Bağlantı Hataları: Servislerin port ve CORS ayarlarını kontrol edin.
-
-Veri Gelmeme: RabbitMQ ve TimescaleDB log’larını inceleyin.
-
-İletişim
-
-Sorumlu: Samet Emre
+- Backend: Java + Spring Boota
+- Frontend: React + TypeScript
+- Veritabanı: PostgreSQL + TimescaleDB eklentisi
+- CI/CD Önerisi: GitHub Actions (build, test ve deploy)
+- Test: JUnit, Mockito, Testcontainers ile birim ve entegrasyon testleri
+- Docker Healthcheck: Servis sağlığı için healthcheck tanımları
